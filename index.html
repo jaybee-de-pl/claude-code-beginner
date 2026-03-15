@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code Beginner Guide</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- Mobile top bar -->
+    <header id="topbar">
+      <button id="sidebar-toggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <span id="topbar-title">Claude Code Guide</span>
+      <div id="topbar-progress">
+        <div id="topbar-progress-bar"></div>
+      </div>
+    </header>
+
+    <!-- Sidebar overlay (mobile) -->
+    <div id="sidebar-overlay"></div>
+
+    <!-- Sidebar nav -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="logo-icon">✦</span>
+          <span class="logo-text">Claude Code Guide</span>
+        </div>
+        <div class="progress-summary">
+          <div class="progress-bar-container">
+            <div id="progress-bar"></div>
+          </div>
+          <span id="progress-text">0 of 14 lessons complete</span>
+        </div>
+      </div>
+      <div id="module-list" class="module-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main id="content">
+      <!-- Rendered by app.js -->
+    </main>
+
+  </div>
+
+  <script src="lessons.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
