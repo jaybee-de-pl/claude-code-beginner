@@ -997,6 +997,390 @@ window.LESSONS = [
       }
 
     ]
+  },
+
+  // ============================================================
+  // MODULE 5: Structuring Your AI Workspace
+  // ============================================================
+  {
+    moduleId: 5,
+    moduleTitle: "Structuring Your AI Workspace",
+    moduleColor: "#10b981",
+    lessons: [
+
+      // ----------------------------------------------------------
+      // 5-0: Project Folder Structure
+      // ----------------------------------------------------------
+      {
+        lessonId: "5-0",
+        title: "Project Folder Structure",
+        estimatedMinutes: 8,
+        intro: "A well-structured project makes Claude dramatically more effective. When Claude knows exactly where things live, it spends less time searching and more time helping. This lesson covers the folder conventions that work best with Claude Code.",
+        steps: [
+          {
+            stepId: "5-0-0",
+            type: "info",
+            title: "The single most important file: CLAUDE.md",
+            content: "Every project should have a <code>CLAUDE.md</code> at the root. This is Claude's briefing document — it reads it automatically when you open the project. A good CLAUDE.md includes:\n\n• How to run, build, and test the project\n• High-level architecture overview\n• Conventions and patterns the team follows\n• What NOT to do (anti-patterns, forbidden dependencies)\n\nRun <strong>/init</strong> to generate a starter CLAUDE.md from your existing code."
+          },
+          {
+            stepId: "5-0-1",
+            type: "info",
+            title: "Recommended folder structure",
+            content: "A project that works well with Claude Code typically looks like this:\n\n<code>my-project/\n├── CLAUDE.md          ← Claude's briefing\n├── .claude/\n│   ├── memory/        ← Project-specific notes Claude can save\n│   └── prompts/       ← Reusable prompt templates\n├── src/               ← Your actual code\n├── docs/              ← Architecture docs, ADRs, specs\n└── README.md          ← For humans on GitHub</code>\n\nThe <code>.claude/</code> folder is for AI-specific context. Keep it separate from your main code."
+          },
+          {
+            stepId: "5-0-2",
+            type: "tip",
+            title: "Store reusable prompts in .claude/prompts/",
+            content: "If you have a prompt you use repeatedly — like a code review template or a commit message format — save it as a markdown file in <code>.claude/prompts/</code>.\n\nFor example: <code>.claude/prompts/pr-review.md</code> with your team's PR review checklist.\n\nThen tell Claude: <em>\"Use the prompt in .claude/prompts/pr-review.md to review this PR.\"</em>\n\nThis gives Claude consistent, high-quality instructions every time."
+          },
+          {
+            stepId: "5-0-3",
+            type: "info",
+            title: "Keep a docs/ folder with architecture decisions",
+            content: "Claude reads your codebase, but it can't read your team's minds. A <code>docs/</code> folder with the following helps enormously:\n\n<strong>architecture.md</strong> — High-level system design, how components relate\n<strong>decisions/</strong> — ADRs (Architecture Decision Records) explaining why choices were made\n<strong>api.md</strong> — How external APIs are used or exposed\n\nWhen you ask Claude about something architectural, point it there:\n<em>\"Check docs/architecture.md before suggesting changes to the auth flow.\"</em>"
+          },
+          {
+            stepId: "5-0-4",
+            type: "quiz",
+            title: "Quick check: CLAUDE.md placement",
+            content: "You're starting a new project and want Claude to always understand the tech stack and coding conventions. Where should you put CLAUDE.md?",
+            options: [
+              "In the src/ folder, next to the main code",
+              "At the project root, alongside README.md",
+              "In .claude/memory/ so Claude saves it automatically",
+              "In docs/ with all the other documentation"
+            ],
+            correctIndex: 1,
+            explanation: "CLAUDE.md belongs at the project root. Claude Code automatically looks for and reads it there whenever you open a project. It works alongside your README.md — README is for humans on GitHub, CLAUDE.md is for Claude."
+          },
+          {
+            stepId: "5-0-5",
+            type: "tip",
+            title: "What makes a great CLAUDE.md",
+            content: "The best CLAUDE.md files are:\n\n✓ <strong>Short and specific</strong> — If it's over 200 lines, trim it\n✓ <strong>Command-focused</strong> — Always include the commands to run, test, and build\n✓ <strong>Opinionated</strong> — Include the rules and conventions that aren't obvious from the code\n✓ <strong>Up to date</strong> — Review it when the project changes significantly\n\nAvoid generic platitudes like \"write clean code\" — Claude already knows that. Focus on what's unique to your project."
+          }
+        ]
+      },
+
+      // ----------------------------------------------------------
+      // 5-1: Sharing Skills & Agents Across Projects
+      // ----------------------------------------------------------
+      {
+        lessonId: "5-1",
+        title: "Sharing Skills Across Projects",
+        estimatedMinutes: 7,
+        intro: "Skills you install once are available everywhere — but knowing how they're organized, and how to build your own, makes you dramatically more productive across all your projects.",
+        steps: [
+          {
+            stepId: "5-1-0",
+            type: "info",
+            title: "Where global skills live",
+            content: "When you install a skill with <code>npx skills add</code>, it goes into your home directory:\n\n<code>~/.agents/\n└── skills/\n    ├── commit/         ← /commit skill\n    ├── simplify/       ← /simplify skill\n    └── frontend-design/ ← /frontend-design skill</code>\n\nEvery folder in <code>~/.agents/skills/</code> becomes a slash command. The skill's <code>SKILL.md</code> file contains the instructions Claude follows when you invoke it."
+          },
+          {
+            stepId: "5-1-1",
+            type: "info",
+            title: "Creating a custom skill",
+            content: "You can write your own skill for any repeatable task. Create a folder and a SKILL.md:\n\n<code>~/.agents/skills/my-review/\n└── SKILL.md</code>\n\nInside <code>SKILL.md</code>, describe exactly what Claude should do when the skill is called. Think of it as a very precise, reusable system prompt for a specific job.\n\nOnce saved, type <strong>/my-review</strong> in any project to run it."
+          },
+          {
+            stepId: "5-1-2",
+            type: "command",
+            title: "See all your installed skills",
+            content: "List the contents of your skills folder to see what's available globally:",
+            command: "ls ~/.agents/skills/",
+            commandExplanation: "This shows every skill you have installed. Each folder name becomes a slash command — so a folder called 'commit' means you can type /commit in Claude Code."
+          },
+          {
+            stepId: "5-1-3",
+            type: "info",
+            title: "Project-specific vs global skills",
+            content: "Some skills are useful everywhere (like /commit). Others are specific to one project or team.\n\n<strong>Global</strong> — install to <code>~/.agents/skills/</code> via npx skills add\n<strong>Project-specific</strong> — save to <code>.claude/skills/</code> inside your project and commit it to git so the whole team has it\n\nProject skills in <code>.claude/skills/</code> are only available when Claude Code is opened in that project folder."
+          },
+          {
+            stepId: "5-1-4",
+            type: "quiz",
+            title: "Quick check: skill placement",
+            content: "Your team has a custom code review checklist that should be available to all developers in your project. Where's the best place to store this as a skill?",
+            options: [
+              "~/.agents/skills/ on your machine only",
+              ".claude/skills/ in the project repo — committed to git",
+              "In a Google Doc so anyone can read it",
+              "In CLAUDE.md at the bottom"
+            ],
+            correctIndex: 1,
+            explanation: "Project-specific skills belong in .claude/skills/ inside the repo and should be committed to git. This way every team member automatically gets the skill when they clone the project — no manual installation needed."
+          },
+          {
+            stepId: "5-1-5",
+            type: "tip",
+            title: "Name skills after jobs, not tools",
+            content: "Good skill names describe the job, not the technology:\n\n✓ <strong>/review-api</strong> — reviews API endpoint design\n✓ <strong>/generate-migration</strong> — creates database migrations\n✓ <strong>/document-component</strong> — writes component documentation\n\n❌ <strong>/claude-review</strong> — vague\n❌ <strong>/my-thing</strong> — meaningless\n\nClear names mean you (and your teammates) instantly know what to type."
+          }
+        ]
+      },
+
+      // ----------------------------------------------------------
+      // 5-2: Knowledge Sharing Across Projects
+      // ----------------------------------------------------------
+      {
+        lessonId: "5-2",
+        title: "Knowledge Across Projects",
+        estimatedMinutes: 7,
+        intro: "As you work across multiple projects, you accumulate knowledge — conventions, patterns, lessons learned. This lesson shows how to make that knowledge available to Claude everywhere, without copy-pasting the same instructions into every CLAUDE.md.",
+        steps: [
+          {
+            stepId: "5-2-0",
+            type: "info",
+            title: "Claude's persistent memory system",
+            content: "Claude Code has a file-based memory system at:\n\n<code>~/.claude/projects/[project-path]/memory/</code>\n\nEach memory is a markdown file with a front matter header. Claude can write memories during a session (you can ask it to), and they're loaded back in future sessions automatically.\n\nThink of it as Claude's own note-taking system — it remembers things you've taught it about this project."
+          },
+          {
+            stepId: "5-2-1",
+            type: "info",
+            title: "Types of memory worth saving",
+            content: "Four kinds of memory are most useful:\n\n<strong>User</strong> — Your role, preferences, expertise level (e.g. \"I'm a backend engineer new to React\")\n<strong>Feedback</strong> — Corrections and rules (e.g. \"Never mock the database in tests\")\n<strong>Project</strong> — Active decisions and context (e.g. \"We're mid-migration to TypeScript\")\n<strong>Reference</strong> — Where to find external info (e.g. \"Bugs tracked in Linear project CORE\")\n\nTell Claude: <em>\"Remember that we never use class components in this project.\"</em> and it saves a feedback memory automatically."
+          },
+          {
+            stepId: "5-2-2",
+            type: "info",
+            title: "Shared patterns across multiple projects",
+            content: "If you have conventions that apply everywhere — like your preferred code style, commit message format, or security rules — put them in a global context file:\n\n<code>~/.claude/global-context.md</code>\n\nThen reference it in every project's CLAUDE.md:\n\n<em>\"See ~/.claude/global-context.md for team-wide coding conventions.\"</em>\n\nThis is a single source of truth — update one file and all projects benefit."
+          },
+          {
+            stepId: "5-2-3",
+            type: "tip",
+            title: "Monorepo tip: one CLAUDE.md per package",
+            content: "In a monorepo with multiple packages, add a CLAUDE.md to each package folder in addition to the root:\n\n<code>my-monorepo/\n├── CLAUDE.md              ← repo-level context\n├── packages/\n│   ├── api/\n│   │   └── CLAUDE.md      ← API-specific context\n│   └── frontend/\n│       └── CLAUDE.md      ← frontend-specific context</code>\n\nClaude reads the most relevant CLAUDE.md based on which files you're working on."
+          },
+          {
+            stepId: "5-2-4",
+            type: "quiz",
+            title: "Quick check: cross-project knowledge",
+            content: "You have a security rule — 'never log user PII' — that applies to every project you work on. What's the most efficient way to make sure Claude always follows this in every project?",
+            options: [
+              "Add it to every project's CLAUDE.md manually",
+              "Tell Claude at the start of every session",
+              "Save it as a feedback memory so Claude learns it globally",
+              "Write it in a comment in each file"
+            ],
+            correctIndex: 2,
+            explanation: "A feedback memory saved to Claude's persistent memory system is remembered across all sessions. You only tell Claude once and it carries the rule forward automatically — no need to repeat it in every project or every session."
+          },
+          {
+            stepId: "5-2-5",
+            type: "info",
+            title: "Structure summary: the full picture",
+            content: "Here's how all the layers fit together:\n\n<strong>Global</strong> (~/ level):\n• <code>~/.agents/skills/</code> — skills available everywhere\n• <code>~/.claude/global-context.md</code> — team-wide rules\n• Claude's persistent memory (loaded automatically)\n\n<strong>Project</strong> (repo root level):\n• <code>CLAUDE.md</code> — project briefing\n• <code>.claude/skills/</code> — team-specific skills\n• <code>.claude/prompts/</code> — reusable prompt templates\n• <code>docs/</code> — architecture and decisions\n\nEach layer adds more specificity. Global knowledge + project knowledge = Claude that truly understands your context."
+          }
+        ]
+      }
+
+    ]
+  },
+
+  // ============================================================
+  // MODULE 6: Obsidian as a Knowledge Base for Claude Code
+  // ============================================================
+  {
+    moduleId: 6,
+    moduleTitle: "Obsidian + MCP Knowledge Base",
+    moduleColor: "#7c3aed",
+    lessons: [
+
+      // ----------------------------------------------------------
+      // 6-0: Why Obsidian + Claude Code
+      // ----------------------------------------------------------
+      {
+        lessonId: "6-0",
+        title: "Obsidian as Your Second Brain",
+        estimatedMinutes: 7,
+        intro: "Obsidian is a local, markdown-based knowledge base — think of it as a structured notebook where everything is just text files. Because Claude Code can read text files, your Obsidian vault can become a rich source of context that Claude draws on when helping you.",
+        steps: [
+          {
+            stepId: "6-0-0",
+            type: "info",
+            title: "What is Obsidian?",
+            content: "<strong>Obsidian</strong> is a free knowledge management app where notes are plain markdown files stored locally on your machine. No proprietary format, no cloud lock-in — just a folder of <code>.md</code> files.\n\nBecause the files are plain text in a folder, Claude Code can read, search, and reason over them — just like it reads your code. Your meeting notes, architecture docs, research, and decisions can all become Claude's context."
+          },
+          {
+            stepId: "6-0-1",
+            type: "info",
+            title: "Why connect Obsidian to Claude?",
+            content: "Most developers keep important knowledge scattered:\n\n• Architecture decisions in Confluence\n• Team decisions in Slack threads\n• Personal notes in Obsidian or Notion\n• Project specs in Google Docs\n\nClaude can only help with what it can see. By connecting these sources, you eliminate the gap between \"what Claude knows\" and \"what your team knows\". You ask Claude a question once and it draws from all your knowledge sources."
+          },
+          {
+            stepId: "6-0-2",
+            type: "info",
+            title: "How it works: MCP",
+            content: "<strong>MCP (Model Context Protocol)</strong> is Anthropic's open standard for connecting external tools and data sources to Claude. Think of it as a plugin system:\n\n• Each <strong>MCP server</strong> connects Claude to a specific data source (filesystem, Confluence, Slack, databases)\n• Claude Code has a built-in MCP client that can talk to multiple servers simultaneously\n• You configure which servers to use in Claude Code's settings\n\nWith MCP, Claude can read from your Obsidian vault, search Confluence, and fetch Slack messages — all in one conversation."
+          },
+          {
+            stepId: "6-0-3",
+            type: "info",
+            title: "What knowledge works well in Obsidian for Claude",
+            content: "Organize your Obsidian vault with Claude in mind:\n\n<strong>architecture/</strong> — System design, component relationships, data flows\n<strong>decisions/</strong> — Why you chose X over Y (ADRs)\n<strong>meetings/</strong> — Action items, decisions from key meetings\n<strong>people/</strong> — Team members, roles, responsibilities\n<strong>projects/</strong> — Per-project context, status, open questions\n\nWhen you ask Claude to help with a feature, it can check your architecture notes to understand constraints, then check decisions/ to see if similar things were tried before."
+          },
+          {
+            stepId: "6-0-4",
+            type: "quiz",
+            title: "Quick check: what is MCP?",
+            content: "You want Claude to be able to read your Obsidian notes during a coding session. What is MCP's role in making this happen?",
+            options: [
+              "MCP is a sync tool that copies your Obsidian notes into Claude's memory",
+              "MCP is a plugin standard that connects Claude to external data sources like your filesystem",
+              "MCP is a file format that Claude understands natively",
+              "MCP stands for My Claude Preferences — it's a settings file"
+            ],
+            correctIndex: 1,
+            explanation: "MCP (Model Context Protocol) is Anthropic's open standard for connecting Claude to external tools and data sources. An MCP server for the filesystem lets Claude read folders like your Obsidian vault in real time — nothing is copied or synced, Claude reads on demand."
+          },
+          {
+            stepId: "6-0-5",
+            type: "tip",
+            title: "Start with architecture and decisions",
+            content: "Don't try to connect everything at once. Start with the two note types that give Claude the most leverage:\n\n1. <strong>Architecture notes</strong> — Claude stops making suggestions that conflict with your system design\n2. <strong>Decision records</strong> — Claude stops recommending approaches your team already ruled out\n\nThese two note types prevent the most common frustration: Claude giving technically correct advice that ignores your specific context."
+          }
+        ]
+      },
+
+      // ----------------------------------------------------------
+      // 6-1: Setting Up MCP with Obsidian
+      // ----------------------------------------------------------
+      {
+        lessonId: "6-1",
+        title: "Connecting Obsidian via MCP",
+        estimatedMinutes: 10,
+        intro: "The filesystem MCP server lets Claude read any folder on your machine — including your Obsidian vault. This lesson walks through installing the server and pointing it at your vault.",
+        steps: [
+          {
+            stepId: "6-1-0",
+            type: "info",
+            title: "The filesystem MCP server",
+            content: "The official MCP filesystem server from Anthropic lets Claude read (and optionally write) files in specified directories. It runs as a local process on your machine — your files never leave your computer.\n\nPackage: <code>@modelcontextprotocol/server-filesystem</code>\n\nYou configure it in Claude Code's settings file, specifying exactly which folders it's allowed to access. Your Obsidian vault folder is all you need to give it access to."
+          },
+          {
+            stepId: "6-1-1",
+            type: "info",
+            title: "Where Claude Code MCP settings live",
+            content: "Claude Code reads MCP server configuration from a JSON settings file. On Mac, it's at:\n\n<code>~/.claude/claude_code_settings.json</code>\n\nThis file controls which MCP servers Claude Code loads when it starts. You add servers here as JSON entries. Each entry specifies the command to run the server and any arguments (like which folder to grant access to)."
+          },
+          {
+            stepId: "6-1-2",
+            type: "command",
+            title: "Add the filesystem MCP server",
+            content: "Run this command to install the filesystem MCP server and add it to your Claude Code settings (replace the path with your actual Obsidian vault location):",
+            command: "claude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Documents/Obsidian",
+            commandExplanation: "This registers the MCP filesystem server with Claude Code. The path at the end — ~/Documents/Obsidian — is the folder Claude is allowed to read. Replace it with the actual path to your Obsidian vault folder."
+          },
+          {
+            stepId: "6-1-3",
+            type: "command",
+            title: "Verify the server is registered",
+            content: "Check that the MCP server was added correctly:",
+            command: "claude mcp list",
+            commandExplanation: "Lists all MCP servers registered with Claude Code. You should see 'filesystem' in the list. If it's not there, re-run the claude mcp add command with the correct vault path."
+          },
+          {
+            stepId: "6-1-4",
+            type: "info",
+            title: "Using your Obsidian notes in Claude",
+            content: "After restarting Claude Code (or opening a new session), you can now ask Claude to use your notes:\n\n<em>\"Check my Obsidian architecture notes and then help me design the new payment flow.\"</em>\n\n<em>\"Search my Obsidian decisions folder — have we ever discussed switching from REST to GraphQL?\"</em>\n\n<em>\"Read ~/Documents/Obsidian/projects/my-app.md and give me a status summary.\"</em>\n\nClaude will read the actual files in real time and incorporate that knowledge into its response."
+          },
+          {
+            stepId: "6-1-5",
+            type: "tip",
+            title: "Keep your vault structure consistent",
+            content: "When Claude reads your vault, it navigates by folder and file names. Consistent naming makes a big difference:\n\n✓ <code>decisions/2024-auth-library-choice.md</code> — date + topic\n✓ <code>architecture/api-gateway.md</code> — component name\n✓ <code>meetings/2024-03-15-sprint-planning.md</code> — date + meeting type\n\nIf files are named <code>untitled.md</code> or <code>notes2.md</code>, Claude can still read them — but it can't intelligently navigate or search them the way it can with clear names."
+          },
+          {
+            stepId: "6-1-6",
+            type: "quiz",
+            title: "Quick check: MCP filesystem setup",
+            content: "You've run `claude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Notes`. What does Claude now have access to?",
+            options: [
+              "All files on your entire computer",
+              "Only the ~/Notes folder and its contents",
+              "Only .md files inside ~/Notes",
+              "A copy of ~/Notes synced to Anthropic's servers"
+            ],
+            correctIndex: 1,
+            explanation: "The filesystem MCP server only grants access to the specific folder (and its subfolders) you specify. In this case, ~/Notes and everything inside it. Claude cannot read anything outside that folder — your other files remain completely inaccessible."
+          }
+        ]
+      },
+
+      // ----------------------------------------------------------
+      // 6-2: Confluence & Slack via MCP
+      // ----------------------------------------------------------
+      {
+        lessonId: "6-2",
+        title: "Confluence & Slack via MCP",
+        estimatedMinutes: 10,
+        intro: "Beyond your local notes, your team's knowledge lives in tools like Confluence (documentation) and Slack (decisions, discussions). MCP servers for these tools let Claude search and read that knowledge directly — without you manually copying and pasting context.",
+        steps: [
+          {
+            stepId: "6-2-0",
+            type: "info",
+            title: "Why connect team knowledge sources?",
+            content: "The best answer to a technical question often requires knowing:\n\n• <strong>What was decided</strong> — Confluence: the team's documented choices\n• <strong>Why it was decided</strong> — Slack: the conversation that led to the decision\n• <strong>What the code does</strong> — Your codebase: the current implementation\n\nWith all three connected via MCP, Claude can answer questions like:\n<em>\"What's our approach to rate limiting and why did we choose it?\"</em>\n...by checking Confluence docs, Slack discussions, and your actual code simultaneously."
+          },
+          {
+            stepId: "6-2-1",
+            type: "info",
+            title: "Setting up the Confluence MCP server",
+            content: "Add the Confluence MCP server to Claude Code with your Confluence credentials:\n\n<code>claude mcp add confluence \\\n  -e CONFLUENCE_URL=https://yourteam.atlassian.net \\\n  -e CONFLUENCE_USERNAME=you@company.com \\\n  -e CONFLUENCE_API_TOKEN=your-api-token \\\n  -- npx -y @anthropic-ai/mcp-server-confluence</code>\n\nGet your API token from: <code>id.atlassian.com → Security → API tokens → Create</code>\n\nOnce added, Claude can search and read any Confluence page your account has access to."
+          },
+          {
+            stepId: "6-2-2",
+            type: "info",
+            title: "Using Confluence knowledge in Claude",
+            content: "With the Confluence MCP server running, ask Claude to draw on your team's documentation:\n\n<em>\"Search Confluence for our API versioning policy before you refactor this endpoint.\"</em>\n\n<em>\"Check the Confluence page 'Backend Architecture Overview' and summarize the database layer for me.\"</em>\n\n<em>\"Is there a Confluence runbook for deploying to production? Walk me through it.\"</em>\n\nClaude will search Confluence in real time and use what it finds to give you grounded, team-specific answers."
+          },
+          {
+            stepId: "6-2-3",
+            type: "info",
+            title: "Setting up the Slack MCP server",
+            content: "The Slack MCP server lets Claude search your Slack workspace messages and channels:\n\n<code>claude mcp add slack \\\n  -e SLACK_BOT_TOKEN=xoxb-your-token \\\n  -- npx -y @modelcontextprotocol/server-slack</code>\n\nTo get a Slack bot token:\n1. Go to <code>api.slack.com/apps</code> → Create an app\n2. Add OAuth scopes: <code>channels:history</code>, <code>channels:read</code>, <code>search:read</code>\n3. Install to your workspace and copy the Bot User OAuth Token\n\nAsk your Slack workspace admin if you need help with permissions."
+          },
+          {
+            stepId: "6-2-4",
+            type: "info",
+            title: "Using Slack knowledge in Claude",
+            content: "Once the Slack MCP is connected, Claude can search your team's conversation history:\n\n<em>\"Search Slack for any discussions about migrating to PostgreSQL in the #backend channel.\"</em>\n\n<em>\"Was there a decision in Slack about which error tracking tool to use? Find it and summarize.\"</em>\n\n<em>\"Check the last week of #deploys channel messages and tell me if there were any incidents.\"</em>\n\nThis is especially powerful for recovering context from decisions made in Slack that were never written up formally."
+          },
+          {
+            stepId: "6-2-5",
+            type: "quiz",
+            title: "Quick check: combining knowledge sources",
+            content: "A colleague asks why you chose Redis over Memcached for caching. Claude has MCP access to your Obsidian vault, Confluence, and Slack. What's the best way to get a complete answer?",
+            options: [
+              "Ask Claude: 'why did we choose Redis?' — it will know from the code",
+              "Ask Claude to check Confluence and Slack for discussions about the Redis decision, then summarize",
+              "Search Slack yourself and paste the relevant messages to Claude",
+              "Ask Claude to write a new explanation based on general Redis vs Memcached tradeoffs"
+            ],
+            correctIndex: 1,
+            explanation: "With MCP connected, Claude can search Confluence for documented decisions and Slack for the original discussion — giving you the full picture of what was decided and why. This is far faster than searching manually and avoids the generic answer Claude would give without your team's specific context."
+          },
+          {
+            stepId: "6-2-6",
+            type: "tip",
+            title: "The compound knowledge effect",
+            content: "The real power comes from combining all sources in one conversation:\n\n<em>\"I'm building the new notification service. Check:\n1. Our Obsidian architecture notes for the current message bus design\n2. Confluence for any notification service specs\n3. Slack #backend for discussions about notification requirements\n\nThen give me a recommended approach that fits our existing architecture.\"</em>\n\nThis kind of prompt would take a human engineer 30+ minutes to research manually. With MCP, Claude does it in seconds — and gives you a grounded recommendation specific to your team's actual context."
+          },
+          {
+            stepId: "6-2-7",
+            type: "info",
+            title: "More MCP servers to explore",
+            content: "The MCP ecosystem is growing quickly. Other useful servers include:\n\n<strong>GitHub MCP</strong> — Read issues, PRs, and code from any GitHub repo\n<strong>Linear MCP</strong> — Search your project management tickets\n<strong>Notion MCP</strong> — Connect your Notion workspace\n<strong>PostgreSQL / SQLite MCP</strong> — Query your database schema directly\n<strong>Browser MCP</strong> — Let Claude browse the web or internal tools\n\nBrowse all available servers at: <code>modelcontextprotocol.io/servers</code>\n\nEach server follows the same pattern: <code>claude mcp add [name] -- npx -y [package]</code>"
+          }
+        ]
+      }
+
+    ]
   }
 
 ];

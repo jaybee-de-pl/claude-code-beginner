@@ -64,7 +64,7 @@ The sidebar is rendered once at startup via `renderSidebar()` and updated increm
 
 ## CSS conventions
 
-All design tokens are CSS custom properties on `:root` in `style.css`. Module accent colors are `--module-0` through `--module-3`. The layout uses CSS Grid: `280px sidebar | 1fr content` on desktop; sidebar becomes an off-canvas drawer via `transform: translateX(-100%)` on mobile (≤768px).
+All design tokens are CSS custom properties on `:root` in `style.css`. Module accent colors come from `moduleColor` hex values defined inline in `lessons.js` (not CSS variables). The layout uses CSS Grid: `280px sidebar | 1fr content` on desktop; sidebar becomes an off-canvas drawer via `transform: translateX(-100%)` on mobile (≤768px).
 
 ## Deployment
 

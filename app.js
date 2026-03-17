@@ -296,7 +296,7 @@
       <div class="completion-screen">
         <span class="completion-emoji">🎉</span>
         <h1>You did it!</h1>
-        <p>You've completed all ${TOTAL_LESSONS} lessons. You know how to use Claude Code, manage code with GitHub, deploy a live website — and use Claude's power features like agents, skills, and context.</p>
+        <p>You've completed all ${TOTAL_LESSONS} lessons. You know how to use Claude Code, manage code with GitHub, deploy a live website — and use Claude's power features like agents, skills, context, structured workspaces, and MCP-connected knowledge bases.</p>
         <div class="completion-stats">
           <div class="stat-box">
             <span class="stat-number">${TOTAL_LESSONS}</span>
