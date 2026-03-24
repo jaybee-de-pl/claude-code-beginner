@@ -1027,7 +1027,7 @@ window.LESSONS = [
             stepId: "5-0-1",
             type: "info",
             title: "Recommended folder structure",
-            content: "A project that works well with Claude Code typically looks like this:\n\n<code>my-project/\n├── CLAUDE.md          ← Claude's briefing\n├── .claude/\n│   ├── memory/        ← Project-specific notes Claude can save\n│   └── prompts/       ← Reusable prompt templates\n├── src/               ← Your actual code\n├── docs/              ← Architecture docs, ADRs, specs\n└── README.md          ← For humans on GitHub</code>\n\nThe <code>.claude/</code> folder is for AI-specific context. Keep it separate from your main code."
+            content: "A project that works well with Claude Code typically looks like this:\n\n<code>my-project/\n├── CLAUDE.md          ← Claude's briefing\n├── .claude/\n│   ├── rules/         ← Rule files by topic (code-style.md, testing.md, security.md)\n│   └── settings.json  ← Project-level Claude Code settings\n├── src/               ← Your actual code\n├── docs/              ← Architecture docs, ADRs, specs\n└── README.md          ← For humans on GitHub</code>\n\nThe <code>.claude/rules/</code> folder is an official Claude Code feature — put rule files there instead of cramming everything into one long CLAUDE.md. Claude Code loads them automatically."
           },
           {
             stepId: "5-0-2",
@@ -1059,7 +1059,7 @@ window.LESSONS = [
             stepId: "5-0-5",
             type: "tip",
             title: "What makes a great CLAUDE.md",
-            content: "The best CLAUDE.md files are:\n\n✓ <strong>Short and specific</strong> — If it's over 200 lines, trim it\n✓ <strong>Command-focused</strong> — Always include the commands to run, test, and build\n✓ <strong>Opinionated</strong> — Include the rules and conventions that aren't obvious from the code\n✓ <strong>Up to date</strong> — Review it when the project changes significantly\n\nAvoid generic platitudes like \"write clean code\" — Claude already knows that. Focus on what's unique to your project."
+            content: "The best CLAUDE.md files are:\n\n✓ <strong>Short and specific</strong> — If it's over 200 lines, trim it\n✓ <strong>Command-focused</strong> — Always include the commands to run, test, and build\n✓ <strong>Opinionated</strong> — Include the rules and conventions that aren't obvious from the code\n✓ <strong>Up to date</strong> — Review it when the project changes significantly\n✓ <strong>Uses @-imports</strong> — Reference other files with <code>@docs/architecture.md</code> to pull in content without duplicating it\n\nExample import line in CLAUDE.md:\n<code>See @docs/architecture.md for system design and @docs/decisions/ for past decisions.</code>\n\nClaude reads the imported files automatically every session. Avoid generic platitudes like \"write clean code\" — focus on what's unique to your project."
           }
         ]
       },
@@ -1147,7 +1147,7 @@ window.LESSONS = [
             stepId: "5-2-2",
             type: "info",
             title: "Shared patterns across multiple projects",
-            content: "If you have conventions that apply everywhere — like your preferred code style, commit message format, or security rules — put them in a global context file:\n\n<code>~/.claude/global-context.md</code>\n\nThen reference it in every project's CLAUDE.md:\n\n<em>\"See ~/.claude/global-context.md for team-wide coding conventions.\"</em>\n\nThis is a single source of truth — update one file and all projects benefit."
+            content: "If you have conventions that apply everywhere — like your preferred code style, commit message format, or security rules — put them in your user-level CLAUDE.md:\n\n<code>~/.claude/CLAUDE.md</code>\n\nThis is an official Claude Code feature. It loads automatically in <em>every</em> project you open — no cross-referencing needed, no copy-pasting.\n\nFor example, your <code>~/.claude/CLAUDE.md</code> might contain:\n\n<em>• Never log user PII in any form\n• Commit messages must follow Conventional Commits format\n• Always use TypeScript strict mode</em>\n\nUpdate one file, and these rules apply everywhere immediately."
           },
           {
             stepId: "5-2-3",
@@ -1163,17 +1163,17 @@ window.LESSONS = [
             options: [
               "Add it to every project's CLAUDE.md manually",
               "Tell Claude at the start of every session",
-              "Save it as a feedback memory so Claude learns it globally",
+              "Add it to ~/.claude/CLAUDE.md — it loads automatically in all projects",
               "Write it in a comment in each file"
             ],
             correctIndex: 2,
-            explanation: "A feedback memory saved to Claude's persistent memory system is remembered across all sessions. You only tell Claude once and it carries the rule forward automatically — no need to repeat it in every project or every session."
+            explanation: "~/.claude/CLAUDE.md is the user-level CLAUDE.md that Claude Code loads automatically across every project you open. It's the right place for explicit personal rules. (Feedback memories are complementary — they help Claude remember patterns it learned from your corrections, but for explicit written rules, the user-level CLAUDE.md is the official mechanism.)"
           },
           {
             stepId: "5-2-5",
             type: "info",
             title: "Structure summary: the full picture",
-            content: "Here's how all the layers fit together:\n\n<strong>Global</strong> (~/ level):\n• <code>~/.agents/skills/</code> — skills available everywhere\n• <code>~/.claude/global-context.md</code> — team-wide rules\n• Claude's persistent memory (loaded automatically)\n\n<strong>Project</strong> (repo root level):\n• <code>CLAUDE.md</code> — project briefing\n• <code>.claude/skills/</code> — team-specific skills\n• <code>.claude/prompts/</code> — reusable prompt templates\n• <code>docs/</code> — architecture and decisions\n\nEach layer adds more specificity. Global knowledge + project knowledge = Claude that truly understands your context."
+            content: "Here's how all the layers fit together:\n\n<strong>Global</strong> (~/ level):\n• <code>~/.claude/CLAUDE.md</code> — your personal rules, loaded in every project\n• <code>~/.agents/skills/</code> — skills available everywhere (via npx skills)\n• Claude's persistent memory — project-specific patterns Claude has learned\n\n<strong>Project</strong> (repo root level):\n• <code>CLAUDE.md</code> — project briefing (also valid at <code>.claude/CLAUDE.md</code>)\n• <code>.claude/rules/</code> — rule files organized by topic (code-style.md, testing.md)\n• <code>.claude/settings.json</code> — project-level Claude Code settings\n• <code>docs/</code> — architecture docs, ADRs, specs (importable via @ in CLAUDE.md)\n\nEach layer adds more specificity. Global rules + project briefing + organized rules = Claude that truly understands your context."
           }
         ]
       }
@@ -1264,16 +1264,16 @@ window.LESSONS = [
           {
             stepId: "6-1-1",
             type: "info",
-            title: "Where Claude Code MCP settings live",
-            content: "Claude Code reads MCP server configuration from a JSON settings file. On Mac, it's at:\n\n<code>~/.claude/claude_code_settings.json</code>\n\nThis file controls which MCP servers Claude Code loads when it starts. You add servers here as JSON entries. Each entry specifies the command to run the server and any arguments (like which folder to grant access to)."
+            title: "MCP scopes: where configs are saved",
+            content: "When you run <code>claude mcp add</code>, Claude Code saves the config automatically — you never edit a JSON file manually. The <strong>scope flag</strong> controls where it's saved:\n\n<strong>--scope user</strong> → <code>~/.claude.json</code><br>Your personal servers, available across <em>all</em> your projects\n\n<strong>--scope project</strong> → <code>.mcp.json</code> in the project root<br>Team-shared, committed to git — everyone on the team gets these servers\n\n<strong>--scope local</strong> (default) → project-private, never committed<br>Only active in the current project, only for you\n\n<strong>For your Obsidian vault:</strong> use <code>--scope user</code> — you want it everywhere.\n<strong>For a shared team database:</strong> use <code>--scope project</code> and commit <code>.mcp.json</code>."
           },
           {
             stepId: "6-1-2",
             type: "command",
             title: "Add the filesystem MCP server",
             content: "Run this command to install the filesystem MCP server and add it to your Claude Code settings (replace the path with your actual Obsidian vault location):",
-            command: "claude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Documents/Obsidian",
-            commandExplanation: "This registers the MCP filesystem server with Claude Code. The path at the end — ~/Documents/Obsidian — is the folder Claude is allowed to read. Replace it with the actual path to your Obsidian vault folder."
+            command: "claude mcp add --scope user filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Documents/Obsidian",
+            commandExplanation: "The --scope user flag makes this server available in all your projects (not just the current one). 'filesystem' is the name you give this server. The path at the end — ~/Documents/Obsidian — is the only folder Claude is allowed to read. Replace it with the actual path to your Obsidian vault."
           },
           {
             stepId: "6-1-3",
@@ -1299,7 +1299,7 @@ window.LESSONS = [
             stepId: "6-1-6",
             type: "quiz",
             title: "Quick check: MCP filesystem setup",
-            content: "You've run `claude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Notes`. What does Claude now have access to?",
+            content: "You've run `claude mcp add --scope user filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Notes`. What does Claude now have access to?",
             options: [
               "All files on your entire computer",
               "Only the ~/Notes folder and its contents",
@@ -1331,7 +1331,7 @@ window.LESSONS = [
             stepId: "6-2-1",
             type: "info",
             title: "Setting up the Confluence MCP server",
-            content: "Add the Confluence MCP server to Claude Code with your Confluence credentials:\n\n<code>claude mcp add confluence \\\n  -e CONFLUENCE_URL=https://yourteam.atlassian.net \\\n  -e CONFLUENCE_USERNAME=you@company.com \\\n  -e CONFLUENCE_API_TOKEN=your-api-token \\\n  -- npx -y @anthropic-ai/mcp-server-confluence</code>\n\nGet your API token from: <code>id.atlassian.com → Security → API tokens → Create</code>\n\nOnce added, Claude can search and read any Confluence page your account has access to."
+            content: "Add the Confluence MCP server to Claude Code with your Confluence credentials:\n\n<code>claude mcp add --scope user confluence \\\n  -e CONFLUENCE_URL=https://yourteam.atlassian.net \\\n  -e CONFLUENCE_USERNAME=you@company.com \\\n  -e CONFLUENCE_API_TOKEN=your-api-token \\\n  -- npx -y @anthropic-ai/mcp-server-confluence</code>\n\nGet your API token from: <code>id.atlassian.com → Security → API tokens → Create</code>\n\n<strong>Important:</strong> MCP package names change as the ecosystem evolves. Before running the command, verify the current Confluence package name at <code>modelcontextprotocol.io</code> — Atlassian may also publish an official connector. The command structure above is correct; only the package name needs confirming.\n\nOnce added, Claude can search and read any Confluence page your account has access to."
           },
           {
             stepId: "6-2-2",
@@ -1343,7 +1343,7 @@ window.LESSONS = [
             stepId: "6-2-3",
             type: "info",
             title: "Setting up the Slack MCP server",
-            content: "The Slack MCP server lets Claude search your Slack workspace messages and channels:\n\n<code>claude mcp add slack \\\n  -e SLACK_BOT_TOKEN=xoxb-your-token \\\n  -- npx -y @modelcontextprotocol/server-slack</code>\n\nTo get a Slack bot token:\n1. Go to <code>api.slack.com/apps</code> → Create an app\n2. Add OAuth scopes: <code>channels:history</code>, <code>channels:read</code>, <code>search:read</code>\n3. Install to your workspace and copy the Bot User OAuth Token\n\nAsk your Slack workspace admin if you need help with permissions."
+            content: "The Slack MCP server lets Claude search your Slack workspace messages and channels:\n\n<code>claude mcp add --scope user slack \\\n  -e SLACK_BOT_TOKEN=xoxb-your-token \\\n  -- npx -y @modelcontextprotocol/server-slack</code>\n\nTo get a Slack bot token:\n1. Go to <code>api.slack.com/apps</code> → Create an app\n2. Add OAuth scopes: <code>channels:history</code>, <code>channels:read</code>, <code>search:read</code>\n3. Install to your workspace and copy the Bot User OAuth Token\n\nAsk your Slack workspace admin if you need help with permissions.\n\n<strong>Important:</strong> Verify the current Slack package name at <code>modelcontextprotocol.io</code> before running — community packages get updated regularly."
           },
           {
             stepId: "6-2-4",
@@ -1375,7 +1375,7 @@ window.LESSONS = [
             stepId: "6-2-7",
             type: "info",
             title: "More MCP servers to explore",
-            content: "The MCP ecosystem is growing quickly. Other useful servers include:\n\n<strong>GitHub MCP</strong> — Read issues, PRs, and code from any GitHub repo\n<strong>Linear MCP</strong> — Search your project management tickets\n<strong>Notion MCP</strong> — Connect your Notion workspace\n<strong>PostgreSQL / SQLite MCP</strong> — Query your database schema directly\n<strong>Browser MCP</strong> — Let Claude browse the web or internal tools\n\nBrowse all available servers at: <code>modelcontextprotocol.io/servers</code>\n\nEach server follows the same pattern: <code>claude mcp add [name] -- npx -y [package]</code>"
+            content: "The MCP ecosystem is growing quickly. Other useful servers include:\n\n<strong>GitHub MCP</strong> — Read issues, PRs, and code from any GitHub repo\n<strong>Linear MCP</strong> — Search your project management tickets\n<strong>Notion MCP</strong> — Connect your Notion workspace\n<strong>PostgreSQL / SQLite MCP</strong> — Query your database schema directly\n<strong>Browser MCP</strong> — Let Claude browse the web or internal tools\n\nBrowse available servers at: <code>modelcontextprotocol.io</code>\n\nEach server follows the same pattern (add <code>--scope user</code> for personal servers, <code>--scope project</code> for team-shared):\n<code>claude mcp add --scope user [name] -- npx -y [package]</code>"
           }
         ]
       }
